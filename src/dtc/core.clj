@@ -24,7 +24,7 @@
 (defprotocol Converter
   (convert
     [from to]
-    [from to fmt]))
+    [from to option]))
 
 (defn- extpand-converters [x p]
   (keep-indexed #(if (odd? %1)
@@ -51,7 +51,7 @@
                      (if (fn? ~to)
                        (~to ~from)
                        (throw (IllegalArgumentException. "No Implematation of converter"))))))
-              
+
               ([~from ~to ~option]
                  (when (and ~from ~to)
                    (condp = (if (class? ~to) ~to (~to *alias*))
@@ -67,7 +67,11 @@
                         timezone *time-zone*}}]
      (let [timezone (if (string? timezone) (TimeZone/getTimeZone timezone) timezone)]
        (if (sequential? format)
-         (if-let [res (first (filter identity (map #(try (parse-date value {:format % :timezone timezone}) (catch ParseException e)) format)))]
+         (if-let [res (first (filter identity
+                                     (map
+                                      #(try (parse-date value {:format % :timezone timezone})
+                                            (catch ParseException e))
+                                      format)))]
            res
            (throw (ParseException. (str "Unparseable date: " value) 0)))
          (let [fmt (SimpleDateFormat. format)]
@@ -156,8 +160,8 @@
      String format-number
      Integer #(.intValue ^Float %)
      Float #(.floatValue ^Float %)
-     BigDecimal #(BigDecimal. ^Float %)
-     Number #(BigDecimal. ^Float %)))
+     BigDecimal #(BigDecimal. ^String (.toString ^Float %))
+     Number #(BigDecimal. ^String (.toString ^Float %))))
 
 (defmacro extend-double-converter [& body]
   `(defconverter Double

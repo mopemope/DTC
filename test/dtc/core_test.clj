@@ -109,6 +109,5 @@
           (convert-map in fmt)))))
 
 
-(run-tests)
 
 
