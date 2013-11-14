@@ -1,4 +1,4 @@
-(defproject dtc "0.1.0-SNAPSHOT"
+(defproject dtc "0.1.1"
   :description "Simple Clojure Type Converter and Utilities Library"
   :url "http://github.com/mopemope/dtc"
   :license {:name "Eclipse Public License"
