@@ -45,20 +45,22 @@
             ~type-name
             (~'convert
               ([~from ~to]
-                 (when (and ~from ~to)
+                 (if (and ~to)
                    (condp = (if (class? ~to) ~to (~to *alias*))
                      ~@(extpand-converters body from)
                      (if (fn? ~to)
                        (~to ~from)
-                       (throw (IllegalArgumentException. "No Implematation of converter"))))))
+                       (throw (IllegalArgumentException. "No Implementation of Converter"))))
+                   (throw (IllegalArgumentException. "To type is nil or false"))))
 
               ([~from ~to ~option]
-                 (when (and ~from ~to)
+                 (if (and ~to)
                    (condp = (if (class? ~to) ~to (~to *alias*))
                      ~@(extpand-converters-options body from option)
                      (if (fn? ~to)
                        (~to ~from ~option)
-                       (throw (IllegalArgumentException. "No Implematation of converter"))))))))))
+                       (throw (IllegalArgumentException. "No Implementation of Converter"))))
+                   (throw (IllegalArgumentException. "To type is nil or false"))))))))
 
 (defn ^java.util.Date parse-date
   ([^String value] (parse-date value {}))
@@ -223,7 +225,7 @@
 (defmacro extend-nil-converter [& body]
   `(defconverter nil
      ~@body
-     nil))
+     (throw (IllegalArgumentException. "Value is nil or No Implementation of Converter"))))
 
 (extend-string-converter)
 (extend-integer-converter)

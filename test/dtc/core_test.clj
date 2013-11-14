@@ -90,8 +90,8 @@
   (is (= "0.3" (convert (BigDecimal. "0.3") :string))))
 
 (deftest test-convert-nil
-  (is (nil? (convert nil Number)))
-  (is (nil? (convert nil String))))
+  (is (thrown? IllegalArgumentException (convert nil Number)))
+  (is (thrown? IllegalArgumentException (convert nil String))))
 
 (deftest test-format-number
   (is (= "5,000.42" (convert 5000.42 String "%,.2f"))) 
